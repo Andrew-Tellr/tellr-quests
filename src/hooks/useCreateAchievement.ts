@@ -1,6 +1,5 @@
 import { leaderboardQueryKey } from "@/hooks/useLeaderboard";
 import { leaderboardPositionQueryKey } from "@/hooks/useLeaderboardPosition";
-import { questsQueryKey } from "@/hooks/useQuests";
 import { default as liteflow } from "@/lib/liteflow";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -22,13 +21,13 @@ export default function useCreateAchievement() {
       });
       if (res.error) throw new Error(res.error.message);
       if (res.data.redirect) {
-        await router.push(res.data.redirect);
+        router.push(res.data.redirect);
         return;
       }
 
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: leaderboardQueryKey() }),
-        queryClient.invalidateQueries({ queryKey: questsQueryKey(address) }),
+        queryClient.invalidateQueries({ queryKey: ["quests"] }),
         queryClient.invalidateQueries({
           queryKey: leaderboardPositionQueryKey(address),
         }),
